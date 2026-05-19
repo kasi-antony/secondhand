@@ -1,18 +1,18 @@
 require('dotenv').config();
 const dns = require('dns');
-dns.setDefaultResultOrder('ipv4first');  
-const express     = require('express');
-const cors        = require('cors');
-const rateLimit   = require('express-rate-limit');
-const connectDB   = require('./config/db');
-const path        = require('path');
+dns.setServers(['8.8.8.8', '8.8.4.4']);
+dns.setDefaultResultOrder('ipv4first');
+
+const express = require('express');
+const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+const connectDB = require('./config/db');
+const path = require('path');
 
 const app = express();
 
-// ── Connect DB ────────────────────────────────────
 connectDB();
 
-// ── Middleware ────────────────────────────────────
 app.use(cors({
   origin: [
     'http://127.0.0.1:5500',
@@ -24,30 +24,21 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Rate limiting
-app.use('/api/auth', rateLimit({ windowMs: 15 * 60 * 1000, max: 20, message: 'Too many requests, please try again later.' }));
+app.use('/api/auth', rateLimit({ windowMs: 15 * 60 * 1000, max: 20 }));
 app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, max: 200 }));
 
-// ── Routes ────────────────────────────────────────
+// ── API Routes FIRST ──────────────────────────────
+app.get('/api/health', (req, res) => res.json({ status: 'ok', env: process.env.NODE_ENV }));
 app.use('/api/auth',     require('./routes/auth'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders',   require('./routes/orders'));
 
-// ── Serve frontend in production ──────────────────
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../frontend/index.html'));
-  });
-}
+// ── Frontend AFTER API routes ─────────────────────
+app.use(express.static(path.join(__dirname, '../frontend')));
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../frontend/index.html'));
+});
 
-// ── Health check ──────────────────────────────────
-app.get('/api/health', (req, res) => res.json({ status: 'ok', env: process.env.NODE_ENV }));
-
-// ── 404 ───────────────────────────────────────────
-app.use((req, res) => res.status(404).json({ success: false, message: 'Route not found' }));
-
-// ── Error handler ─────────────────────────────────
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({ success: false, message: err.message || 'Server error' });
