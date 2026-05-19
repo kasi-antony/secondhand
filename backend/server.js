@@ -14,7 +14,11 @@ connectDB();
 
 // ── Middleware ────────────────────────────────────
 app.use(cors({
-  origin: process.env.CLIENT_URL || '*',
+  origin: [
+    'http://127.0.0.1:5500',
+    'http://localhost:5500',
+    'https://secondhand-gold.vercel.app'
+  ],
   credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));
