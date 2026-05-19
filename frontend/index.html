@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Second Hand — Buy, Sell & Rent</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --green:#2d7a45;--green-light:#e8f5ed;--green-mid:#4caf72;
+    --green-dark:#1a5230;--green-pale:#f2faf5;
+    --white:#fff;--off:#f9fbf9;
+    --g50:#f5f5f5;--g100:#e8e8e8;--g300:#b0b0b0;--g500:#6b6b6b;--g700:#333;
+    --text:#1a1a1a;--r:12px;--rs:8px;
+    --sh:0 2px 12px rgba(45,122,69,.08);--shm:0 4px 24px rgba(45,122,69,.13);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--text);min-height:100vh}
+  h1,h2,h3{font-family:'Sora',sans-serif}
+
+  /* ── NAV ── */
+  nav{background:var(--white);border-bottom:1px solid var(--g100);padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:1rem}
+
+  /* LOGO */
+  .logo{display:flex;align-items:center;gap:.6rem;cursor:pointer;text-decoration:none}
+  .logo-mark{
+    width:42px;height:42px;border-radius:10px;
+    background:var(--green);display:flex;align-items:center;justify-content:center;
+    position:relative;flex-shrink:0;
+  }
+  .logo-mark svg{width:28px;height:28px}
+  .logo-text{display:flex;flex-direction:column;line-height:1.1}
+  .logo-text .l1{font-family:'Sora',sans-serif;font-weight:800;font-size:1.05rem;color:var(--green-dark);letter-spacing:-.5px}
+  .logo-text .l2{font-size:.68rem;color:var(--g500);font-weight:400;letter-spacing:.02em}
+
+  /* NAV LINKS */
+  .nav-links{display:flex;align-items:center;gap:.2rem;flex:1;justify-content:center}
+  .nav-link{
+    position:relative;padding:.4rem .9rem;font-size:.88rem;font-weight:500;
+    color:var(--g500);cursor:pointer;border-radius:var(--rs);
+    transition:color .16s,background .16s;display:flex;align-items:center;gap:.3rem;
+    background:none;border:none;font-family:'DM Sans',sans-serif;
+  }
+  .nav-link:hover{color:var(--green);background:var(--green-pale)}
+  .nav-link.active{color:var(--green-dark);background:var(--green-light)}
+  .nav-link .arrow{font-size:.65rem;transition:transform .2s}
+  .nav-link.open .arrow{transform:rotate(180deg)}
+
+  /* DROPDOWN */
+  .nav-dropdown{
+    position:absolute;top:calc(100% + .5rem);left:50%;transform:translateX(-50%);
+    background:var(--white);border:1px solid var(--g100);border-radius:var(--r);
+    padding:.5rem;min-width:180px;box-shadow:var(--shm);
+    display:none;flex-direction:column;gap:.1rem;z-index:200;
+  }
+  .nav-link.open .nav-dropdown{display:flex}
+  .drop-item{
+    padding:.55rem .9rem;border-radius:var(--rs);font-size:.85rem;
+    color:var(--g700);cursor:pointer;display:flex;align-items:center;gap:.6rem;
+    transition:background .14s;
+  }
+  .drop-item:hover{background:var(--green-pale);color:var(--green-dark)}
+  .drop-item .di{font-size:1rem}
+
+  .nav-right{display:flex;gap:.55rem;align-items:center;flex-shrink:0}
+  .btn{padding:.45rem 1.1rem;border-radius:var(--rs);border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;transition:all .18s}
+  .btn-ghost{background:transparent;border:1.5px solid var(--green);color:var(--green)}
+  .btn-ghost:hover{background:var(--green-light)}
+  .btn-primary{background:var(--green);color:#fff}
+  .btn-primary:hover{background:var(--green-dark)}
+  .btn-sm{padding:.3rem .85rem;font-size:.82rem}
+  .btn-outline{background:transparent;border:1.5px solid var(--g300);color:var(--g700)}
+  .btn-outline:hover{border-color:var(--green);color:var(--green)}
+  .btn-danger{background:#fee2e2;color:#991b1b;border:none}
+  .btn-danger:hover{background:#fecaca}
+
+  /* ── PAGES ── */
+  .page{display:none}.page.active{display:block}
+
+  /* ── AUTH ── */
+  .auth-wrap{min-height:calc(100vh - 62px);display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--green-pale) 0%,var(--white) 60%);padding:2rem}
+  .auth-card{background:var(--white);border:1px solid var(--g100);border-radius:20px;padding:2.5rem;width:100%;max-width:420px;box-shadow:var(--shm)}
+  .auth-card h2{font-size:1.6rem;color:var(--green-dark);margin-bottom:.3rem}
+  .auth-card p{color:var(--g500);font-size:.9rem;margin-bottom:1.8rem}
+  .role-toggle{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.5rem}
+  .role-btn{padding:.8rem;border-radius:var(--rs);border:1.5px solid var(--g100);background:var(--off);cursor:pointer;text-align:center;transition:all .18s;font-family:'DM Sans',sans-serif}
+  .role-btn.active{border-color:var(--green);background:var(--green-light)}
+  .role-btn .ri{font-size:1.5rem;display:block;margin-bottom:.3rem}
+  .role-btn .rl{font-size:.85rem;font-weight:500;color:var(--g700)}
+  .role-btn.active .rl{color:var(--green-dark)}
+  .form-group{margin-bottom:1rem}
+  .form-group label{display:block;font-size:.83rem;font-weight:500;color:var(--g500);margin-bottom:.35rem}
+  .form-group input,.form-group select,.form-group textarea{width:100%;padding:.65rem .9rem;border:1.5px solid var(--g100);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:.9rem;background:var(--off);color:var(--text);transition:border-color .18s;outline:none}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green)}
+  .auth-switch{text-align:center;margin-top:1.2rem;font-size:.87rem;color:var(--g500)}
+  .auth-switch a{color:var(--green);cursor:pointer;font-weight:500;text-decoration:none}
+  .auth-switch a:hover{text-decoration:underline}
+
+  /* ── ABOUT PAGE ── */
+  .about-hero{background:var(--green-dark);color:white;padding:5rem 2rem;text-align:center}
+  .about-hero h1{font-size:2.8rem;font-weight:800;margin-bottom:.8rem;letter-spacing:-1px}
+  .about-hero h1 span{color:var(--green-mid)}
+  .about-hero p{font-size:1.1rem;opacity:.8;max-width:560px;margin:0 auto}
+  .about-body{max-width:900px;margin:0 auto;padding:4rem 2rem}
+  .about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;margin:3rem 0}
+  .about-card{background:var(--white);border:1px solid var(--g100);border-radius:var(--r);padding:1.8rem;transition:box-shadow .2s}
+  .about-card:hover{box-shadow:var(--shm)}
+  .about-card .ac-icon{font-size:2rem;margin-bottom:.8rem}
+  .about-card h3{font-size:1rem;color:var(--green-dark);margin-bottom:.4rem}
+  .about-card p{font-size:.87rem;color:var(--g500);line-height:1.6}
+  .about-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:2rem 0;text-align:center}
+  .astat{background:var(--green-light);border-radius:var(--r);padding:1.5rem}
+  .astat .num{font-family:'Sora',sans-serif;font-size:2rem;font-weight:800;color:var(--green-dark)}
+  .astat .label{font-size:.82rem;color:var(--g500);margin-top:.3rem}
+  .about-team{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin:2rem 0}
+  .team-card{background:var(--white);border:1px solid var(--g100);border-radius:var(--r);padding:1.4rem;text-align:center}
+  .team-avatar{width:56px;height:56px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:700;font-size:1.2rem;color:white;margin:0 auto .8rem}
+  .team-name{font-weight:600;font-size:.9rem}
+  .team-role{font-size:.78rem;color:var(--g500)}
+  .about-section-title{font-size:1.4rem;color:var(--green-dark);margin-bottom:1rem}
+  .contact-form{background:var(--white);border:1px solid var(--g100);border-radius:var(--r);padding:2rem;max-width:500px}
+
+  /* ── DASH LAYOUT ── */
+  .dash-layout{display:flex;min-height:calc(100vh - 62px)}
+  .sidebar{width:220px;background:var(--white);border-right:1px solid var(--g100);padding:1.5rem 0;flex-shrink:0}
+  .sidebar-item{display:flex;align-items:center;gap:.7rem;padding:.7rem 1.4rem;font-size:.9rem;font-weight:500;cursor:pointer;color:var(--g500);border-left:3px solid transparent;transition:all .16s}
+  .sidebar-item:hover{color:var(--green);background:var(--green-pale)}
+  .sidebar-item.active{color:var(--green-dark);background:var(--green-light);border-left-color:var(--green)}
+  .sidebar-icon{font-size:1.1rem}
+  .dash-main{flex:1;padding:2rem;overflow-y:auto}
+  .dash-header{margin-bottom:1.8rem}
+  .dash-header h2{font-size:1.5rem;color:var(--green-dark)}
+  .dash-header p{color:var(--g500);font-size:.9rem;margin-top:.2rem}
+
+  /* ── STATS ── */
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2rem}
+  .stat-card{background:var(--white);border:1px solid var(--g100);border-radius:var(--r);padding:1.1rem 1.2rem}
+  .stat-val{font-size:1.6rem;font-weight:700;font-family:'Sora',sans-serif;color:var(--green-dark)}
+  .stat-label{font-size:.8rem;color:var(--g500);margin-top:.2rem}
+  .stat-badge{display:inline-block;font-size:.72rem;padding:.2rem .5rem;border-radius:20px;background:var(--green-light);color:var(--green-dark);margin-top:.5rem}
+
+  /* ── PRODUCTS ── */
+  .section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+  .section-head h3{font-size:1rem;color:var(--g700);font-weight:600}
+  .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+  .product-card{background:var(--white);border:1px solid var(--g100);border-radius:var(--r);overflow:hidden;transition:box-shadow .18s,transform .18s}
+  .product-card:hover{box-shadow:var(--shm);transform:translateY(-2px)}
+  .product-img{width:100%;height:140px;background:var(--green-pale);display:flex;align-items:center;justify-content:center;font-size:2.5rem}
+  .product-img img{width:100%;height:100%;object-fit:cover}
+  .product-body{padding:.85rem}
+  .product-title{font-weight:600;font-size:.9rem;margin-bottom:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .product-sub{font-size:.78rem;color:var(--g500);margin-bottom:.6rem}
+  .product-price{font-size:.95rem;font-weight:700;color:var(--green)}
+  .product-rent{font-size:.78rem;color:var(--g500)}
+  .badge{display:inline-block;padding:.18rem .55rem;border-radius:20px;font-size:.72rem;font-weight:500}
+  .badge-rent{background:#fff3e0;color:#e65100}
+  .badge-sale{background:var(--green-light);color:var(--green-dark)}
+  .badge-rented{background:#fce4ec;color:#880e4f}
+  .badge-paid{background:#e8f5e9;color:#1b5e20}
+  .product-actions{display:flex;gap:.5rem;margin-top:.7rem}
+
+  /* ── ADD LISTING ── */
+  .listing-form-card{background:var(--white);border:1px solid var(--g100);border-radius:var(--r);padding:1.8rem;max-width:600px}
+  .type-toggle{display:flex;gap:.6rem;margin-bottom:1.2rem}
+  .type-btn{flex:1;padding:.65rem;border-radius:var(--rs);border:1.5px solid var(--g100);cursor:pointer;text-align:center;font-family:'DM Sans',sans-serif;font-size:.87rem;font-weight:500;background:var(--off);color:var(--g500);transition:all .16s}
+  .type-btn.active{border-color:var(--green);background:var(--green-light);color:var(--green-dark)}
+  .rent-fields{display:none}
+  .rent-fields.show{display:block}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+  /* ── BROWSE ── */
+  .search-bar{display:flex;gap:.8rem;margin-bottom:1.2rem;flex-wrap:wrap;align-items:center}
+  .search-input{flex:1;min-width:180px;padding:.6rem 1rem;border:1.5px solid var(--g100);border-radius:30px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;background:var(--white)}
+  .search-input:focus{border-color:var(--green)}
+  .filter-select{padding:.6rem 1rem;border:1.5px solid var(--g100);border-radius:30px;font-family:'DM Sans',sans-serif;font-size:.87rem;outline:none;background:var(--white);cursor:pointer}
+  .filter-tabs{display:flex;gap:.5rem;margin-bottom:1.2rem;flex-wrap:wrap}
+  .filter-tab{padding:.35rem .9rem;border-radius:20px;border:1.5px solid var(--g100);background:var(--white);cursor:pointer;font-size:.83rem;font-weight:500;color:var(--g500);transition:all .16s}
+  .filter-tab.active{background:var(--green);border-color:var(--green);color:#fff}
+
+  /* ── MODALS ── */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:300;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:var(--white);border-radius:20px;padding:2rem;width:90%;max-width:420px;box-shadow:0 8px 40px rgba(0,0,0,.18);animation:slideUp .22s ease}
+  @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .modal h3{font-size:1.2rem;color:var(--green-dark);margin-bottom:.3rem}
+  .modal-product-info{background:var(--green-pale);border-radius:var(--rs);padding:.8rem 1rem;margin:1rem 0;display:flex;align-items:center;gap:.8rem}
+  .modal-icon{font-size:2rem}
+  .days-slider{width:100%;margin:.5rem 0;accent-color:var(--green)}
+  .rent-summary{background:var(--green-light);border-radius:var(--rs);padding:.8rem 1rem;margin:1rem 0}
+  .rent-summary .row{display:flex;justify-content:space-between;font-size:.88rem;padding:.2rem 0}
+  .rent-summary .total{font-weight:700;color:var(--green-dark);font-size:1rem;border-top:1px solid var(--green-mid);margin-top:.4rem;padding-top:.4rem}
+  .modal-actions{display:flex;gap:.7rem;margin-top:1.2rem}
+
+  /* ── ORDERS ── */
+  .orders-list{display:flex;flex-direction:column;gap:.8rem}
+  .order-card{background:var(--white);border:1px solid var(--g100);border-radius:var(--r);padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem}
+  .order-icon{font-size:1.8rem;width:48px;text-align:center}
+  .order-info{flex:1}
+  .order-title{font-weight:600;font-size:.92rem}
+  .order-meta{font-size:.8rem;color:var(--g500);margin-top:.2rem}
+  .order-price{font-weight:700;color:var(--green);font-size:.95rem}
+
+  /* ── PROFILE ── */
+  .profile-card{background:var(--white);border:1px solid var(--g100);border-radius:var(--r);padding:2rem;max-width:500px}
+  .profile-avatar{width:72px;height:72px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:#fff;font-family:'Sora',sans-serif;font-weight:700;margin-bottom:1rem}
+  .profile-name{font-size:1.3rem;font-weight:700;color:var(--green-dark)}
+  .profile-role{font-size:.83rem;color:var(--g500);display:inline-flex;align-items:center;gap:.4rem;margin-top:.2rem}
+  .profile-role span{background:var(--green-light);color:var(--green-dark);padding:.15rem .5rem;border-radius:20px;font-weight:500}
+
+  /* ── TAG/MISC ── */
+  .tag-list{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.4rem}
+  .tag{background:var(--g50);color:var(--g500);border-radius:20px;padding:.15rem .6rem;font-size:.75rem}
+  .divider{height:1px;background:var(--g100);margin:1.2rem 0}
+  .text-green{color:var(--green)}
+  .empty{text-align:center;padding:3rem;color:var(--g500)}
+  .empty .empty-icon{font-size:3rem;margin-bottom:.8rem}
+
+  /* ── TOAST ── */
+  .toast{position:fixed;bottom:2rem;right:2rem;background:var(--green-dark);color:#fff;padding:.8rem 1.4rem;border-radius:var(--rs);font-size:.88rem;z-index:400;opacity:0;transform:translateY(10px);transition:all .22s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateY(0)}
+
+  /* ── PAY BTN ── */
+  .pay-btn{background:linear-gradient(135deg,#528ff0,#1a6fd8);color:#fff;border:none;border-radius:var(--rs);padding:.75rem 1.5rem;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;width:100%;margin-top:.5rem;transition:opacity .18s}
+  .pay-btn:hover{opacity:.9}
+
+  @media(max-width:640px){
+    .sidebar{display:none}
+    .form-row{grid-template-columns:1fr}
+    nav{padding:0 1rem}
+    .dash-main{padding:1rem}
+    .nav-links{display:none}
+    .about-hero h1{font-size:2rem}
+    .about-stat-row{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════ NAV ════════════════ -->
+<nav>
+  <!-- LOGO -->
+  <a class="logo" onclick="showPage('home')" href="#">
+    <div class="logo-mark">
+      <!-- SH merged with currency-style design -->
+      <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Vertical dollar-style bar -->
+        <line x1="14" y1="2" x2="14" y2="26" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- S curve top -->
+        <path d="M19 7.5 C19 5.5 17 4 14 4 C11 4 9 5.5 9 7.8 C9 10 11 11 14 11.5 C17 12 19.5 13 19.5 15.5 C19.5 18 17 19.5 14 19.5 C11 19.5 9 18 9 16" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+        <!-- H right leg hint -->
+        <path d="M20 8 L20 20 M20 14 L23 14 L23 20" stroke="rgba(255,255,255,0.45)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <span class="l1">SecondHand</span>
+      <span class="l2">buy · sell · rent</span>
+    </div>
+  </a>
+
+  <!-- NAV LINKS (expandable) -->
+  <div class="nav-links" id="navLinks">
+    <button class="nav-link" onclick="toggleDrop(this)">
+      Browse <span class="arrow">▾</span>
+      <div class="nav-dropdown">
+        <div class="drop-item" onclick="goToBrowse('all')"><span class="di">🛍️</span> All items</div>
+        <div class="drop-item" onclick="goToBrowse('sale')"><span class="di">🏷️</span> For Sale</div>
+        <div class="drop-item" onclick="goToBrowse('rent')"><span class="di">🔄</span> For Rent</div>
+        <div class="drop-item" onclick="goToBrowse('Electronics')"><span class="di">📱</span> Electronics</div>
+        <div class="drop-item" onclick="goToBrowse('Photography')"><span class="di">📷</span> Photography</div>
+        <div class="drop-item" onclick="goToBrowse('Books & Study')"><span class="di">📚</span> Books</div>
+      </div>
+    </button>
+    <button class="nav-link" onclick="showPage('about')">About Us</button>
+    <button class="nav-link" onclick="toggleDrop(this)" id="dashNav" style="display:none">
+      Dashboard <span class="arrow">▾</span>
+      <div class="nav-dropdown" id="dashDropdown"></div>
+    </button>
+  </div>
+
+  <div class="nav-right" id="navRight">
+    <button class="btn btn-ghost btn-sm" onclick="showPage('login')">Log in</button>
+    <button class="btn btn-primary btn-sm" onclick="showPage('signup')">Sign up</button>
+  </div>
+</nav>
+
+<!-- ════════════════ HOME / BROWSE ════════════════ -->
+<div class="page active" id="page-home">
+  <div style="background:var(--green-dark);color:#fff;padding:4rem 2rem;text-align:center">
+    <div style="max-width:600px;margin:0 auto">
+      <h1 style="font-size:2.6rem;font-weight:800;letter-spacing:-1px;margin-bottom:.6rem">
+        Buy, Sell &amp; <span style="color:var(--green-mid)">Rent</span> Anything
+      </h1>
+      <p style="opacity:.8;font-size:1.05rem;margin-bottom:2rem">India's smartest second-hand marketplace. Need an iPad for 10 days? Just rent it.</p>
+      <div style="display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" style="padding:.7rem 2rem;font-size:.95rem" onclick="showPage('signup')">Get started</button>
+        <button class="btn" style="background:rgba(255,255,255,.15);color:#fff;padding:.7rem 2rem;font-size:.95rem;border:1.5px solid rgba(255,255,255,.3)" onclick="guestBrowse()">Browse listings</button>
+      </div>
+    </div>
+  </div>
+  <div style="max-width:1100px;margin:0 auto;padding:2.5rem 2rem">
+    <div class="search-bar">
+      <input class="search-input" type="text" id="homeSearch" placeholder="Search iPad, camera, books..." oninput="homeFilter()" />
+      <select class="filter-select" id="homeCat" onchange="homeFilter()">
+        <option value="">All categories</option>
+        <option>Electronics</option><option>Books &amp; Study</option><option>Furniture</option>
+        <option>Clothing</option><option>Sports &amp; Fitness</option><option>Photography</option>
+        <option>Vehicles</option><option>Other</option>
+      </select>
+    </div>
+    <div class="filter-tabs">
+      <div class="filter-tab active" onclick="setHomeType('all',this)">All</div>
+      <div class="filter-tab" onclick="setHomeType('sale',this)">For Sale</div>
+      <div class="filter-tab" onclick="setHomeType('rent',this)">For Rent</div>
+    </div>
+    <div class="products-grid" id="homeGrid"></div>
+  </div>
+</div>
+
+<!-- ════════════════ ABOUT US ════════════════ -->
+<div class="page" id="page-about">
+  <div class="about-hero">
+    <h1>About <span>Second Hand</span></h1>
+    <p>We're on a mission to make second-hand the first choice — and renting the smart choice.</p>
+  </div>
+  <div class="about-body">
+    <p style="font-size:1.05rem;line-height:1.75;color:var(--g500);margin-bottom:2rem">
+      Second Hand was born out of a simple frustration: why buy something you only need for a week?
+      Whether it's an iPad for a college project, a DSLR for a wedding shoot, or camping gear for one trip —
+      we believe ownership shouldn't be the only option. We connect sellers with buyers <em>and</em> renters,
+      creating a circular economy that's good for your wallet and the planet.
+    </p>
+
+    <div class="about-stat-row">
+      <div class="astat"><div class="num">10K+</div><div class="label">Listings live</div></div>
+      <div class="astat"><div class="num">₹2Cr+</div><div class="label">Saved by renters</div></div>
+      <div class="astat"><div class="num">25+</div><div class="label">Cities covered</div></div>
+    </div>
+
+    <h2 class="about-section-title">Why Second Hand?</h2>
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="ac-icon">🔄</div>
+        <h3>Rent, don't buy</h3>
+        <p>Need something for a few days? Rent it. Save money, reduce clutter, help the planet.</p>
+      </div>
+      <div class="about-card">
+        <div class="ac-icon">🔒</div>
+        <h3>Safe payments</h3>
+        <p>Every transaction is secured by Razorpay with UPI, cards, and net banking support.</p>
+      </div>
+      <div class="about-card">
+        <div class="ac-icon">📍</div>
+        <h3>Hyperlocal</h3>
+        <p>Find items near you. Less shipping, faster handoffs, lower carbon footprint.</p>
+      </div>
+      <div class="about-card">
+        <div class="ac-icon">🌿</div>
+        <h3>Sustainable</h3>
+        <p>Every second-hand transaction is one less product manufactured new. Small acts, big impact.</p>
+      </div>
+    </div>
+
+    <h2 class="about-section-title" style="margin-top:2.5rem">Meet the team</h2>
+    <div class="about-team">
+      <div class="team-card">
+        <div class="team-avatar" style="background:#2d7a45">A</div>
+        <div class="team-name">Arjun Kumar</div>
+        <div class="team-role">Founder &amp; CEO</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:#1a5230">P</div>
+        <div class="team-name">Priya Nair</div>
+        <div class="team-role">Head of Product</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:#4caf72">S</div>
+        <div class="team-name">Suresh Rajan</div>
+        <div class="team-role">Lead Engineer</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:#0f6e56">R</div>
+        <div class="team-name">Riya Sharma</div>
+        <div class="team-role">Growth &amp; Marketing</div>
+      </div>
+    </div>
+
+    <h2 class="about-section-title" style="margin-top:2.5rem">Get in touch</h2>
+    <div class="contact-form">
+      <div class="form-group"><label>Your name</label><input type="text" placeholder="Arjun Kumar" /></div>
+      <div class="form-group"><label>Email address</label><input type="email" placeholder="you@email.com" /></div>
+      <div class="form-group"><label>Message</label><textarea rows="4" placeholder="Say hello, report a bug, or share feedback..."></textarea></div>
+      <button class="btn btn-primary" style="width:100%;padding:.75rem" onclick="showToast('Message sent! We will get back to you soon.')">Send message</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ LOGIN ════════════════ -->
+<div class="page" id="page-login">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <h2>Welcome back</h2>
+      <p>Sign in to continue to Second Hand</p>
+      <div class="form-group"><label>Email address</label><input type="email" id="loginEmail" placeholder="you@email.com" /></div>
+      <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••" /></div>
+        <button class="btn btn-primary" style="width:100%;padding:.75rem;margin-top:.5rem" onclick="doLogin()">Sign in</button>
+      <div class="auth-switch">Don't have an account? <a onclick="showPage('signup')">Sign up</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ SIGNUP ════════════════ -->
+<div class="page" id="page-signup">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <h2>Create account</h2>
+      <p>Join Second Hand — buy, sell or rent anything</p>
+      <div class="role-toggle">
+        <div class="role-btn active" id="roleBuyer" onclick="selectRole('buyer')"><span class="ri">🛒</span><span class="rl">Buyer</span></div>
+        <div class="role-btn" id="roleSeller" onclick="selectRole('seller')"><span class="ri">📦</span><span class="rl">Seller</span></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>First name</label><input type="text" id="signupFirst" placeholder="Arjun" /></div>
+        <div class="form-group"><label>Last name</label><input type="text" id="signupLast" placeholder="Kumar" /></div>
+      </div>
+      <div class="form-group"><label>Email address</label><input type="email" id="signupEmail" placeholder="you@email.com" /></div>
+      <div class="form-group"><label>Phone number</label><input type="text" id="signupPhone" placeholder="+91 98765 43210" /></div>
+      <div class="form-group"><label>Password</label><input type="password" id="signupPass" placeholder="Min 8 characters" /></div>
+      <button class="btn btn-primary" style="width:100%;padding:.75rem;margin-top:.5rem" onclick="doSignup()">Create account</button>
+      <div class="auth-switch">Already have an account? <a onclick="showPage('login')">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ SELLER DASHBOARD ════════════════ -->
+<div class="page" id="page-seller">
+  <div class="dash-layout">
+    <div class="sidebar">
+      <div class="sidebar-item active" onclick="sellerTab('overview',this)"><span class="sidebar-icon">📊</span>Overview</div>
+      <div class="sidebar-item" onclick="sellerTab('listings',this)"><span class="sidebar-icon">📦</span>My Listings</div>
+      <div class="sidebar-item" onclick="sellerTab('add',this)"><span class="sidebar-icon">➕</span>Add Listing</div>
+      <div class="sidebar-item" onclick="sellerTab('orders',this)"><span class="sidebar-icon">🛍️</span>Orders</div>
+      <div class="sidebar-item" onclick="sellerTab('rentals',this)"><span class="sidebar-icon">🔄</span>Active Rentals</div>
+      <div class="sidebar-item" onclick="sellerTab('profile',this)"><span class="sidebar-icon">👤</span>Profile</div>
+      <div class="divider"></div>
+      <div class="sidebar-item" onclick="doLogout()"><span class="sidebar-icon">🚪</span>Log out</div>
+    </div>
+    <div class="dash-main">
+
+      <div id="seller-overview">
+        <div class="dash-header"><h2 id="sellerGreeting">Hello 👋</h2><p>Here's what's happening with your listings.</p></div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-val" id="sStatListings">0</div><div class="stat-label">Listings</div></div>
+          <div class="stat-card"><div class="stat-val">₹4,280</div><div class="stat-label">Revenue</div><div class="stat-badge">Demo</div></div>
+          <div class="stat-card"><div class="stat-val">3</div><div class="stat-label">Active rentals</div></div>
+          <div class="stat-card"><div class="stat-val">7</div><div class="stat-label">Items sold</div></div>
+        </div>
+        <div class="section-head"><h3>Recent listings</h3><button class="btn btn-ghost btn-sm" onclick="sellerTab('listings',null)">View all</button></div>
+        <div class="products-grid" id="sellerRecentGrid"></div>
+      </div>
+
+      <div id="seller-listings" style="display:none">
+        <div class="dash-header"><h2>My Listings</h2><p>All your items listed for sale or rent.</p></div>
+        <div class="products-grid" id="sellerAllGrid"></div>
+      </div>
+
+      <div id="seller-add" style="display:none">
+        <div class="dash-header"><h2>Add a New Listing</h2><p>List an item for sale, rent, or both.</p></div>
+        <div class="listing-form-card">
+          <div class="type-toggle">
+            <div class="type-btn active" id="typeSale" onclick="setListingType('sale')">🏷️ For Sale</div>
+            <div class="type-btn" id="typeRent" onclick="setListingType('rent')">🔄 For Rent</div>
+            <div class="type-btn" id="typeBoth" onclick="setListingType('both')">⚡ Both</div>
+          </div>
+          <div class="form-group"><label>Product title</label><input type="text" id="listTitle" placeholder="e.g. Apple iPad 9th Gen" /></div>
+          <div class="form-group">
+            <label>Category</label>
+            <select id="listCat">
+              <option>Electronics</option><option>Books &amp; Study</option><option>Furniture</option>
+              <option>Clothing</option><option>Sports &amp; Fitness</option><option>Photography</option>
+              <option>Vehicles</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Description</label><textarea id="listDesc" rows="3" placeholder="Describe condition, accessories, reason for selling..."></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label>Condition</label><select id="listCondition"><option>Like New</option><option>Good</option><option>Fair</option><option>For Parts</option></select></div>
+            <div class="form-group" id="saleField"><label>Sale price (₹)</label><input type="number" id="listPrice" placeholder="5000" /></div>
+          </div>
+          <div class="rent-fields" id="rentFields">
+            <div class="form-row">
+              <div class="form-group"><label>Rent per day (₹)</label><input type="number" id="listRentDay" placeholder="150" /></div>
+              <div class="form-group"><label>Max rental days</label><input type="number" id="listMaxDays" placeholder="30" /></div>
+            </div>
+          </div>
+          <div class="form-group"><label>Product emoji</label><input type="text" id="listEmoji" placeholder="📱" /></div>
+          <div class="form-group"><label>Location</label><input type="text" id="listLocation" placeholder="Chennai, Tamil Nadu" /></div>
+          <button class="btn btn-primary" style="width:100%;padding:.75rem;margin-top:.5rem" onclick="addListing()">Publish listing</button>
+          <p style="font-size:.78rem;color:var(--g500);margin-top:.8rem;text-align:center">💡 Connect your backend and add <code>multipart/form-data</code> image upload for real photos.</p>
+        </div>
+      </div>
+
+      <div id="seller-orders" style="display:none">
+        <div class="dash-header"><h2>Orders Received</h2><p>All purchase orders from buyers.</p></div>
+        <div class="orders-list">
+          <div class="order-card"><div class="order-icon">📷</div><div class="order-info"><div class="order-title">Canon DSLR Camera</div><div class="order-meta">Sold to Riya S. · 2 days ago · <span class="badge badge-paid">Paid via Razorpay</span></div></div><div><div class="order-price">₹8,500</div></div></div>
+          <div class="order-card"><div class="order-icon">🎧</div><div class="order-info"><div class="order-title">Sony WH-1000XM4</div><div class="order-meta">Sold to Aakash M. · 5 days ago · <span class="badge badge-paid">Paid via Razorpay</span></div></div><div><div class="order-price">₹12,000</div></div></div>
+        </div>
+      </div>
+
+      <div id="seller-rentals" style="display:none">
+        <div class="dash-header"><h2>Active Rentals</h2><p>Items currently rented out.</p></div>
+        <div class="orders-list">
+          <div class="order-card"><div class="order-icon">💻</div><div class="order-info"><div class="order-title">MacBook Air M1</div><div class="order-meta">Rented by Priya K.</div><div class="tag-list"><span class="tag">10 days</span><span class="tag">5 days left</span><span class="tag badge badge-paid">Deposit held</span></div></div><div><div class="order-price">₹3,000</div><div class="badge badge-rented" style="margin-top:4px">On Rent</div></div></div>
+          <div class="order-card"><div class="order-icon">📱</div><div class="order-info"><div class="order-title">Apple iPad 9th Gen</div><div class="order-meta">Rented by Suresh R.</div><div class="tag-list"><span class="tag">7 days</span><span class="tag">2 days left</span></div></div><div><div class="order-price">₹700</div><div class="badge badge-rented" style="margin-top:4px">On Rent</div></div></div>
+        </div>
+      </div>
+
+      <div id="seller-profile" style="display:none">
+        <div class="dash-header"><h2>Profile</h2></div>
+        <div class="profile-card">
+          <div class="profile-avatar" id="sellerAvatar">S</div>
+          <div class="profile-name" id="sellerName">Seller</div>
+          <div class="profile-role">Role: <span>Seller</span></div>
+          <div class="divider"></div>
+          <div class="form-group"><label>Display name</label><input type="text" id="sellerNameInput" /></div>
+          <div class="form-group"><label>Email</label><input type="email" id="sellerEmailInput" /></div>
+          <div class="form-group"><label>Phone</label><input type="text" placeholder="+91 98765 43210" /></div>
+          <div class="form-group"><label>Location</label><input type="text" placeholder="Chennai, Tamil Nadu" /></div>
+          <button class="btn btn-primary" onclick="showToast('Profile updated!')">Save changes</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ BUYER DASHBOARD ════════════════ -->
+<div class="page" id="page-buyer">
+  <div class="dash-layout">
+    <div class="sidebar">
+      <div class="sidebar-item active" onclick="buyerTab('browse',this)"><span class="sidebar-icon">🔍</span>Browse</div>
+      <div class="sidebar-item" onclick="buyerTab('rentals',this)"><span class="sidebar-icon">🔄</span>My Rentals</div>
+      <div class="sidebar-item" onclick="buyerTab('orders',this)"><span class="sidebar-icon">🛍️</span>My Orders</div>
+      <div class="sidebar-item" onclick="buyerTab('wishlist',this)"><span class="sidebar-icon">❤️</span>Wishlist</div>
+      <div class="sidebar-item" onclick="buyerTab('profile',this)"><span class="sidebar-icon">👤</span>Profile</div>
+      <div class="divider"></div>
+      <div class="sidebar-item" onclick="doLogout()"><span class="sidebar-icon">🚪</span>Log out</div>
+    </div>
+    <div class="dash-main">
+
+      <div id="buyer-browse">
+        <div class="dash-header"><h2 id="buyerGreeting">Find something great 🌿</h2><p>Browse items near you.</p></div>
+        <div class="search-bar">
+          <input class="search-input" type="text" id="searchInput" placeholder="Search iPad, camera, books..." oninput="filterProducts()" />
+          <select class="filter-select" id="catFilter" onchange="filterProducts()">
+            <option value="">All categories</option>
+            <option>Electronics</option><option>Books &amp; Study</option><option>Furniture</option>
+            <option>Clothing</option><option>Sports &amp; Fitness</option><option>Photography</option>
+            <option>Vehicles</option><option>Other</option>
+          </select>
+        </div>
+        <div class="filter-tabs">
+          <div class="filter-tab active" onclick="setTypeFilter('all',this)">All</div>
+          <div class="filter-tab" onclick="setTypeFilter('sale',this)">For Sale</div>
+          <div class="filter-tab" onclick="setTypeFilter('rent',this)">For Rent</div>
+          <div class="filter-tab" onclick="setTypeFilter('both',this)">Sale &amp; Rent</div>
+        </div>
+        <div class="products-grid" id="buyerGrid"></div>
+      </div>
+
+      <div id="buyer-rentals" style="display:none">
+        <div class="dash-header"><h2>My Rentals</h2><p>Items you're currently renting.</p></div>
+        <div class="orders-list">
+          <div class="order-card"><div class="order-icon">📱</div><div class="order-info"><div class="order-title">Apple iPad 9th Gen</div><div class="order-meta">From Suresh R. · 5 days left</div><div class="tag-list"><span class="tag">7 day rental</span><span class="tag">₹100/day</span><span class="tag badge badge-paid">Paid ✓</span></div></div><div><div class="order-price">₹700</div><div class="badge badge-rented" style="margin-top:4px">Active</div></div></div>
+        </div>
+      </div>
+
+      <div id="buyer-orders" style="display:none">
+        <div class="dash-header"><h2>My Orders</h2><p>Items you've purchased.</p></div>
+        <div class="orders-list">
+          <div class="order-card"><div class="order-icon">📚</div><div class="order-info"><div class="order-title">NCERT Physics Textbooks</div><div class="order-meta">From Priya K. · 3 days ago · <span class="badge badge-paid">Paid ✓</span></div></div><div><div class="order-price">₹350</div></div></div>
+        </div>
+      </div>
+
+      <div id="buyer-wishlist" style="display:none">
+        <div class="dash-header"><h2>Wishlist</h2><p>Items you've saved.</p></div>
+        <div class="products-grid" id="wishlistGrid"></div>
+      </div>
+
+      <div id="buyer-profile" style="display:none">
+        <div class="dash-header"><h2>Profile</h2></div>
+        <div class="profile-card">
+          <div class="profile-avatar" id="buyerAvatar">B</div>
+          <div class="profile-name" id="buyerName">Buyer</div>
+          <div class="profile-role">Role: <span>Buyer</span></div>
+          <div class="divider"></div>
+          <div class="form-group"><label>Display name</label><input type="text" id="buyerNameInput" /></div>
+          <div class="form-group"><label>Email</label><input type="email" id="buyerEmailInput" /></div>
+          <div class="form-group"><label>Phone</label><input type="text" placeholder="+91 98765 43210" /></div>
+          <div class="form-group"><label>Preferred city</label><input type="text" placeholder="Chennai, Tamil Nadu" /></div>
+          <button class="btn btn-primary" onclick="showToast('Profile updated!')">Save changes</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ RENT MODAL ════════════════ -->
+<div class="modal-overlay" id="rentModal">
+  <div class="modal">
+    <h3>Rent this item</h3>
+    <p style="color:var(--g500);font-size:.85rem;margin-top:.2rem">Choose how many days you need it</p>
+    <div class="modal-product-info">
+      <div class="modal-icon" id="modalIcon">📱</div>
+      <div>
+        <div style="font-weight:600;font-size:.92rem" id="modalTitle">iPad</div>
+        <div style="font-size:.8rem;color:var(--g500)" id="modalSeller">By Suresh</div>
+        <div style="font-size:.82rem;color:var(--green);margin-top:.2rem;font-weight:700" id="modalRentRate">₹100/day</div>
+      </div>
+    </div>
+    <label style="font-size:.83rem;font-weight:500;color:var(--g500)">Number of days: <strong id="daysLabel" class="text-green">1</strong></label>
+    <input type="range" class="days-slider" id="daysSlider" min="1" max="30" value="1" oninput="updateRentCalc()" />
+    <div class="rent-summary">
+      <div class="row"><span>Rent per day</span><span id="rcRate">₹100</span></div>
+      <div class="row"><span>Duration</span><span id="rcDays">1 day</span></div>
+      <div class="row"><span>Deposit (refundable)</span><span id="rcDeposit">₹200</span></div>
+      <div class="row total"><span>Total to pay</span><span id="rcTotal">₹300</span></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" style="flex:1" onclick="closeRentModal()">Cancel</button>
+      <button class="pay-btn" style="flex:2" onclick="initiateRazorpay('rental')">Pay with Razorpay</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ BUY MODAL ════════════════ -->
+<div class="modal-overlay" id="buyModal">
+  <div class="modal">
+    <h3>Confirm purchase</h3>
+    <div class="modal-product-info" style="margin-top:1rem">
+      <div class="modal-icon" id="buyModalIcon">📱</div>
+      <div>
+        <div style="font-weight:600;font-size:.92rem" id="buyModalTitle">Product</div>
+        <div style="font-size:.82rem;color:var(--green);margin-top:.2rem;font-weight:700" id="buyModalPrice">₹5,000</div>
+      </div>
+    </div>
+    <div class="rent-summary" style="margin-top:1rem">
+      <div class="row"><span>Item price</span><span id="buyRcPrice">₹5,000</span></div>
+      <div class="row total"><span>Total</span><span id="buyRcTotal">₹5,000</span></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" style="flex:1" onclick="closeBuyModal()">Cancel</button>
+      <button class="pay-btn" style="flex:2" onclick="initiateRazorpay('purchase')">Pay with Razorpay</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ Done!</div>
+
+<!-- Razorpay SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+// ═══ CONFIG — replace with your actual backend URL ═══
+const API = 'http://localhost:5000/api';
+let token = localStorage.getItem('sh_token') || null;
+let currentUser = JSON.parse(localStorage.getItem('sh_user') || 'null');
+let currentRole = 'buyer';
+let signupRole = 'buyer';
+let typeFilter = 'all';
+let homeTypeFilter = 'all';
+let wishlist = [];
+let currentRentItem = null;
+let currentBuyItem = null;
+let listingType = 'sale';
+let sellerProducts = [];
+
+const sampleProducts = [
+  {id:1,title:'Apple iPad 9th Gen',cat:'Electronics',price:18000,rentDay:150,maxDays:30,type:'both',icon:'📱',cond:'Like New',loc:'Chennai',seller:'Suresh R.'},
+  {id:2,title:'MacBook Air M1',cat:'Electronics',price:65000,rentDay:400,maxDays:15,type:'both',icon:'💻',cond:'Good',loc:'Coimbatore',seller:'Priya K.'},
+  {id:3,title:'DSLR Camera Kit',cat:'Photography',price:25000,rentDay:300,maxDays:10,type:'both',icon:'📷',cond:'Good',loc:'Madurai',seller:'Arjun M.'},
+  {id:4,title:'Physics Textbooks Set',cat:'Books & Study',price:350,rentDay:20,maxDays:60,type:'both',icon:'📚',cond:'Good',loc:'Chennai',seller:'Riya S.'},
+  {id:5,title:'Sony WH-1000XM4',cat:'Electronics',price:14000,rentDay:0,maxDays:0,type:'sale',icon:'🎧',cond:'Like New',loc:'Chennai',seller:'Aakash M.'},
+  {id:6,title:'Camping Tent 4-person',cat:'Sports & Fitness',price:0,rentDay:250,maxDays:14,type:'rent',icon:'⛺',cond:'Good',loc:'Ooty',seller:'Nisha T.'},
+  {id:7,title:'Yoga Mat & Block Set',cat:'Sports & Fitness',price:800,rentDay:0,maxDays:0,type:'sale',icon:'🧘',cond:'Like New',loc:'Chennai',seller:'Divya R.'},
+  {id:8,title:'GoPro Hero 11',cat:'Photography',price:30000,rentDay:350,maxDays:7,type:'both',icon:'🎥',cond:'Like New',loc:'Chennai',seller:'Vikram P.'},
+];
+
+// ═══ PAGE ROUTING ═══
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('open'));
+}
+
+function goToBrowse(filter) {
+  document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('open'));
+  if (currentUser) {
+    if (currentRole === 'buyer') {
+      showPage('buyer');
+      buyerTab('browse', null);
+      if (['sale','rent','both'].includes(filter)) { typeFilter=filter; filterProducts(); }
+      else if (filter !== 'all') { document.getElementById('catFilter').value=filter; filterProducts(); }
+    }
+  } else {
+    showPage('home');
+    if (['sale','rent','both'].includes(filter)) { homeTypeFilter=filter; homeFilter(); }
+    else if (filter !== 'all') { document.getElementById('homeCat').value=filter; homeFilter(); }
+  }
+}
+
+function guestBrowse() { showPage('home'); document.getElementById('homeGrid').scrollIntoView({behavior:'smooth'}); }
+
+// ═══ NAV DROPDOWNS ═══
+function toggleDrop(btn) {
+  const wasOpen = btn.classList.contains('open');
+  document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('open'));
+  if (!wasOpen) btn.classList.add('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.nav-link')) document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('open'));
+});
+
+function updateDashNav() {
+  const dash = document.getElementById('dashNav');
+  const dd   = document.getElementById('dashDropdown');
+  if (!currentUser) { dash.style.display='none'; return; }
+  dash.style.display='';
+  const tabs = currentRole === 'seller'
+    ? [['overview','📊'],['listings','📦'],['add','➕'],['orders','🛍️'],['rentals','🔄']]
+    : [['browse','🔍'],['rentals','🔄'],['orders','🛍️'],['wishlist','❤️']];
+  dd.innerHTML = tabs.map(([t,i])=>`<div class="drop-item" onclick="navDash('${t}')"><span class="di">${i}</span>${t.charAt(0).toUpperCase()+t.slice(1)}</div>`).join('');
+}
+function navDash(tab) {
+  document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('open'));
+  if (currentRole==='seller') sellerTab(tab,null);
+  else buyerTab(tab,null);
+  showPage(currentRole);
+}
+
+// ═══ AUTH ═══
+function selectRole(r) {
+  signupRole=r;
+  document.getElementById('roleBuyer').classList.toggle('active',r==='buyer');
+  document.getElementById('roleSeller').classList.toggle('active',r==='seller');
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  if (!email||!pass) { showToast('Please fill both fields'); return; }
+  try {
+    const res  = await fetch(`${API}/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+    const data = await res.json();
+    if (!data.success) { showToast('❌ '+data.message); return; }
+    saveSession(data);
+  } catch {
+    // Demo fallback when backend not connected
+    demoLogin(email);
+  }
+}
+
+async function doSignup() {
+  const first = document.getElementById('signupFirst').value.trim();
+  const last  = document.getElementById('signupLast').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const phone = document.getElementById('signupPhone').value.trim();
+  const pass  = document.getElementById('signupPass').value;
+  if (!first||!email||!pass) { showToast('Please fill required fields'); return; }
+  try {
+    const res  = await fetch(`${API}/auth/signup`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({firstName:first,lastName:last,email,password:pass,phone,role:signupRole})});
+    const data = await res.json();
+    if (!data.success) { showToast('❌ '+data.message); return; }
+    saveSession(data);
+  } catch {
+    demoLogin(email, first, signupRole);
+  }
+}
+
+function saveSession(data) {
+  token = data.token;
+  currentUser = data.user;
+  currentRole = data.user.role;
+  localStorage.setItem('sh_token', token);
+  localStorage.setItem('sh_user', JSON.stringify(data.user));
+  loadDashboard(currentRole, data.user.email, data.user.firstName);
+}
+
+function demoLogin(email, name, role) {
+  const displayName = name || email.split('@')[0];
+  currentRole = role || (email.includes('sell') ? 'seller' : 'buyer');
+  currentUser = {firstName: displayName, email, role: currentRole};
+  loadDashboard(currentRole, email, displayName);
+  showToast('🔌 Demo mode — connect backend for real auth');
+}
+
+function loadDashboard(role, email, name) {
+  sellerProducts = [...sampleProducts.slice(0,4)];
+  if (role==='seller') {
+    document.getElementById('sellerGreeting').textContent = 'Hello, '+name+' 👋';
+    document.getElementById('sellerName').textContent = name;
+    document.getElementById('sellerAvatar').textContent = name[0].toUpperCase();
+    document.getElementById('sellerNameInput').value = name;
+    document.getElementById('sellerEmailInput').value = email||'';
+    document.getElementById('sStatListings').textContent = sellerProducts.length;
+    renderSellerGrid(); showPage('seller');
+  } else {
+    document.getElementById('buyerGreeting').textContent = 'Find something great, '+name+' 🌿';
+    document.getElementById('buyerName').textContent = name;
+    document.getElementById('buyerAvatar').textContent = name[0].toUpperCase();
+    document.getElementById('buyerNameInput').value = name;
+    document.getElementById('buyerEmailInput').value = email||'';
+    renderBuyerGrid(sampleProducts); showPage('buyer');
+  }
+  document.getElementById('navRight').innerHTML = `<span style="font-size:.85rem;color:var(--g500)">${name}</span><button class="btn btn-ghost btn-sm" onclick="doLogout()">Log out</button>`;
+  updateDashNav();
+}
+
+function doLogout() {
+  token=null; currentUser=null;
+  localStorage.removeItem('sh_token'); localStorage.removeItem('sh_user');
+  document.getElementById('navRight').innerHTML = `<button class="btn btn-ghost btn-sm" onclick="showPage('login')">Log in</button><button class="btn btn-primary btn-sm" onclick="showPage('signup')">Sign up</button>`;
+  document.getElementById('dashNav').style.display='none';
+  showPage('home');
+}
+
+// ═══ HOME BROWSE ═══
+let homeType='all';
+function homeFilter() {
+  const q   = document.getElementById('homeSearch').value.toLowerCase();
+  const cat = document.getElementById('homeCat').value;
+  let items = sampleProducts.filter(p=>{
+    const mq  = !q || p.title.toLowerCase().includes(q);
+    const mc  = !cat || p.cat===cat;
+    const mt  = homeType==='all' || p.type===homeType || (homeType!=='both'&&p.type==='both');
+    return mq&&mc&&mt;
+  });
+  renderHomeGrid(items);
+}
+function setHomeType(t,el) {
+  homeType=t;
+  document.querySelectorAll('.filter-tabs .filter-tab').forEach(f=>f.classList.remove('active'));
+  el.classList.add('active'); homeFilter();
+}
+function renderHomeGrid(items) {
+  const g=document.getElementById('homeGrid');
+  g.innerHTML = items.map(p=>productCard(p,'home')).join('');
+}
+
+// ═══ SELLER ═══
+function sellerTab(tab,el) {
+  document.querySelectorAll('#page-seller .sidebar-item').forEach(i=>i.classList.remove('active'));
+  if(el) el.classList.add('active');
+  ['overview','listings','add','orders','rentals','profile'].forEach(t=>document.getElementById('seller-'+t).style.display=t===tab?'':'none');
+  if(tab==='overview') renderSellerGrid();
+  if(tab==='listings') renderSellerAllGrid();
+}
+function renderSellerGrid() { document.getElementById('sellerRecentGrid').innerHTML=sellerProducts.slice(0,4).map(p=>productCard(p,'seller')).join(''); }
+function renderSellerAllGrid() { document.getElementById('sellerAllGrid').innerHTML=sellerProducts.map(p=>productCard(p,'seller')).join(''); }
+
+function setListingType(t) {
+  listingType=t;
+  ['sale','rent','both'].forEach(x=>document.getElementById('type'+x.charAt(0).toUpperCase()+x.slice(1)).classList.toggle('active',x===t));
+  const rf=document.getElementById('rentFields'),sf=document.getElementById('saleField');
+  if(t==='rent'){rf.classList.add('show');sf.style.display='none';}
+  else if(t==='sale'){rf.classList.remove('show');sf.style.display='';}
+  else{rf.classList.add('show');sf.style.display='';}
+}
+
+async function addListing() {
+  const title = document.getElementById('listTitle').value.trim();
+  const cat   = document.getElementById('listCat').value;
+  const desc  = document.getElementById('listDesc').value.trim();
+  const price = parseInt(document.getElementById('listPrice').value)||0;
+  const rentDay  = parseInt(document.getElementById('listRentDay').value)||0;
+  const maxDays  = parseInt(document.getElementById('listMaxDays').value)||0;
+  const emoji    = document.getElementById('listEmoji').value||'📦';
+  const loc      = document.getElementById('listLocation').value||'India';
+  const cond     = document.getElementById('listCondition').value;
+  if(!title){showToast('Please enter a product title');return;}
+
+  // Try real API first
+  if(token) {
+    try {
+      const body={title,description:desc,category:cat,condition:cond,location:loc,listingType,salePrice:price||undefined,rentPerDay:rentDay||undefined,maxRentDays:maxDays||undefined};
+      const res=await fetch(`${API}/products`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(body)});
+      const data=await res.json();
+      if(data.success){showToast('✅ Listing published!');sellerTab('listings',null);return;}
+    } catch{}
+  }
+  // Local demo
+  const item={id:Date.now(),title,cat,price,rentDay,maxDays,type:listingType,icon:emoji,cond,loc,seller:'You',desc};
+  sellerProducts.unshift(item); sampleProducts.unshift(item);
+  document.getElementById('sStatListings').textContent=sellerProducts.length;
+  showToast('✅ Listing published (demo)!');
+  sellerTab('listings',null);
+  document.querySelectorAll('#page-seller .sidebar-item').forEach((el,i)=>el.classList.toggle('active',i===1));
+  renderSellerAllGrid();
+}
+
+// ═══ BUYER ═══
+function buyerTab(tab,el) {
+  document.querySelectorAll('#page-buyer .sidebar-item').forEach(i=>i.classList.remove('active'));
+  if(el) el.classList.add('active');
+  ['browse','rentals','orders','wishlist','profile'].forEach(t=>document.getElementById('buyer-'+t).style.display=t===tab?'':'none');
+  if(tab==='wishlist') renderWishlist();
+}
+function filterProducts() {
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const cat=document.getElementById('catFilter').value;
+  let items=sampleProducts.filter(p=>{
+    const mq=!q||p.title.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q);
+    const mc=!cat||p.cat===cat;
+    const mt=typeFilter==='all'||p.type===typeFilter||(typeFilter!=='both'&&p.type==='both');
+    return mq&&mc&&mt;
+  });
+  renderBuyerGrid(items);
+}
+function setTypeFilter(t,el) {
+  typeFilter=t;
+  document.querySelectorAll('#buyer-browse .filter-tab').forEach(f=>f.classList.remove('active'));
+  el.classList.add('active'); filterProducts();
+}
+function renderBuyerGrid(items) {
+  const g=document.getElementById('buyerGrid');
+  if(!items.length){g.innerHTML='<div class="empty"><div class="empty-icon">🔍</div><p>No items found.</p></div>';return;}
+  g.innerHTML=items.map(p=>productCard(p,'buyer')).join('');
+}
+
+// ═══ PRODUCT CARD ═══
+function productCard(p, ctx) {
+  const rentBadge = p.type==='rent' ? '<span class="badge badge-rent">Rent only</span>' :
+    p.type==='both' ? '<span class="badge badge-sale">Sale + Rent</span>' : '<span class="badge badge-sale">Sale</span>';
+  const priceHtml = p.type==='sale' ? `<div class="product-price">₹${p.price.toLocaleString()}</div>` :
+    p.type==='rent' ? `<div class="product-price">₹${p.rentDay}/day</div>` :
+    `<div class="product-price">₹${p.price.toLocaleString()} <span class="product-rent">or ₹${p.rentDay}/day</span></div>`;
+  let actions='';
+  if(ctx==='buyer'||ctx==='home') {
+    const buyBtn  = p.type!=='rent'  ? `<button class="btn btn-primary btn-sm" style="flex:1" onclick='openBuyModal(${JSON.stringify(p)})'>Buy</button>` : '';
+    const rentBtn = p.type!=='sale'  ? `<button class="btn btn-ghost btn-sm" style="flex:1" onclick='openRentModal(${JSON.stringify(p)})'>Rent</button>` : '';
+    const wlBtn   = ctx==='buyer'    ? `<button class="btn btn-outline btn-sm" onclick="toggleWishlist(${p.id})" title="Wishlist">❤️</button>` : '';
+    const loginBtn= ctx==='home'     ? `<button class="btn btn-ghost btn-sm" style="flex:1" onclick="showPage('signup')">Sign in to buy/rent</button>` : '';
+    actions=`<div class="product-actions">${ctx==='home'?loginBtn:buyBtn+rentBtn+wlBtn}</div>`;
+  } else if(ctx==='seller') {
+    actions=`<div class="product-actions"><button class="btn btn-outline btn-sm" style="flex:1" onclick="showToast('Edit coming soon!')">Edit</button><button class="btn btn-danger btn-sm" onclick="removeListing(${p.id})">🗑️</button></div>`;
+  }
+  return `<div class="product-card"><div class="product-img">${p.icon}</div><div class="product-body"><div class="product-title">${p.title}</div><div class="product-sub">${p.cond} · ${p.loc}</div>${rentBadge}${priceHtml}${actions}</div></div>`;
+}
+
+function removeListing(id) {
+  sellerProducts = sellerProducts.filter(p=>p.id!==id);
+  renderSellerAllGrid();
+  document.getElementById('sStatListings').textContent=sellerProducts.length;
+  showToast('Listing removed');
+}
+
+// ═══ WISHLIST ═══
+function toggleWishlist(id) {
+  if(wishlist.includes(id)){wishlist=wishlist.filter(x=>x!==id);showToast('Removed from wishlist');}
+  else{wishlist.push(id);showToast('❤️ Added to wishlist!');}
+}
+function renderWishlist() {
+  const g=document.getElementById('wishlistGrid');
+  const items=sampleProducts.filter(p=>wishlist.includes(p.id));
+  if(!items.length){g.innerHTML='<div class="empty"><div class="empty-icon">❤️</div><p>Save items here.</p></div>';return;}
+  g.innerHTML=items.map(p=>productCard(p,'buyer')).join('');
+}
+
+// ═══ RENT MODAL ═══
+function openRentModal(p) {
+  currentRentItem=p;
+  document.getElementById('modalIcon').textContent=p.icon;
+  document.getElementById('modalTitle').textContent=p.title;
+  document.getElementById('modalSeller').textContent='By '+p.seller+' · '+p.loc;
+  document.getElementById('modalRentRate').textContent='₹'+p.rentDay+'/day';
+  const s=document.getElementById('daysSlider');
+  s.max=p.maxDays||30; s.value=1;
+  updateRentCalc();
+  document.getElementById('rentModal').classList.add('open');
+}
+function closeRentModal(){document.getElementById('rentModal').classList.remove('open');}
+function updateRentCalc() {
+  if(!currentRentItem)return;
+  const days=parseInt(document.getElementById('daysSlider').value);
+  const rate=currentRentItem.rentDay, dep=rate*2, total=rate*days+dep;
+  document.getElementById('daysLabel').textContent=days;
+  document.getElementById('rcRate').textContent='₹'+rate;
+  document.getElementById('rcDays').textContent=days+' day'+(days>1?'s':'');
+  document.getElementById('rcDeposit').textContent='₹'+dep;
+  document.getElementById('rcTotal').textContent='₹'+total;
+}
+
+// ═══ BUY MODAL ═══
+function openBuyModal(p) {
+  currentBuyItem=p;
+  document.getElementById('buyModalIcon').textContent=p.icon;
+  document.getElementById('buyModalTitle').textContent=p.title;
+  document.getElementById('buyModalPrice').textContent='₹'+p.price.toLocaleString();
+  document.getElementById('buyRcPrice').textContent='₹'+p.price.toLocaleString();
+  document.getElementById('buyRcTotal').textContent='₹'+p.price.toLocaleString();
+  document.getElementById('buyModal').classList.add('open');
+}
+function closeBuyModal(){document.getElementById('buyModal').classList.remove('open');}
+
+// ═══ RAZORPAY PAYMENT ═══
+async function initiateRazorpay(type) {
+  const item = type==='rental' ? currentRentItem : currentBuyItem;
+  if(!item){showToast('No item selected');return;}
+
+  // If backend is connected, create real Razorpay order
+  if(token) {
+    try {
+      const days=type==='rental'?parseInt(document.getElementById('daysSlider').value):undefined;
+      const res=await fetch(`${API}/orders/create-order`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+        body:JSON.stringify({productId:item.id,orderType:type,rentalDays:days})
+      });
+      const data=await res.json();
+      if(data.success){launchRazorpay(data,item,type);return;}
+    } catch{}
+  }
+
+  // Demo mode — show what Razorpay would look like
+  showToast('🔌 Connect backend to activate real Razorpay payments');
+  closeRentModal(); closeBuyModal();
+  setTimeout(()=>showToast('✅ Demo order confirmed!'),800);
+}
+
+function launchRazorpay(orderData, item, type) {
+  const options={
+    key: orderData.keyId,
+    amount: orderData.amount,
+    currency: orderData.currency,
+    name: 'Second Hand',
+    description: type==='rental'?`Rent: ${item.title}`:`Buy: ${item.title}`,
+    order_id: orderData.rzpOrderId,
+    theme: { color: '#2d7a45' },
+    handler: async function(response) {
+      try {
+        const res=await fetch(`${API}/orders/verify-payment`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+          body:JSON.stringify({orderId:orderData.orderId,...response})
+        });
+        const data=await res.json();
+        if(data.success) showToast('🎉 Payment successful! Order confirmed.');
+        else showToast('❌ Payment verification failed');
+      } catch{ showToast('❌ Error verifying payment'); }
+      closeRentModal(); closeBuyModal();
+    },
+    prefill: { name: currentUser?.firstName, email: currentUser?.email }
+  };
+  const rzp=new Razorpay(options); rzp.open();
+}
+
+// ═══ TOAST ═══
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ═══ INIT ═══
+renderHomeGrid(sampleProducts);
+if(currentUser&&token) loadDashboard(currentUser.role,currentUser.email,currentUser.firstName);
+updateDashNav();
+</script>
+</body>
+</html>
